@@ -38,7 +38,7 @@ public class TypeDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(resultSet, preparedStatement, connection);
+			//DBUtil.close(resultSet, preparedStatement, connection);
 		}
 		return list;
 	}
@@ -119,7 +119,7 @@ public class TypeDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(resultSet, preparedStatement, connection);
+			//DBUtil.close(resultSet, preparedStatement, connection);
 		}
 		return noteType;
 	}

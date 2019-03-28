@@ -50,5 +50,17 @@ public class User {
 	public void setMood(String mood) {
 		this.mood = mood;
 	}
-	
+
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"userId=" + userId +
+				", uname='" + uname + '\'' +
+				", upwd='" + upwd + '\'' +
+				", nick='" + nick + '\'' +
+				", head='" + head + '\'' +
+				", mood='" + mood + '\'' +
+				'}';
+	}
 }

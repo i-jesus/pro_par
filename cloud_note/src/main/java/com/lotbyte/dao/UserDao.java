@@ -59,7 +59,7 @@ public class UserDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(resultSet, preparedStatement, connection);
+			//DBUtil.close(resultSet, preparedStatement, connection);
 		}
 		
 		return user;

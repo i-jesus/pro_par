@@ -9,6 +9,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.lotbyte.po.Note;
 import com.lotbyte.util.DBUtil;
@@ -66,7 +68,7 @@ public class BaseDao {
 			}
 		} finally {
 			// 关闭资源
-			DBUtil.close(null, preparedStatement, connection);
+			DBUtil.close(Optional.ofNullable(null), Optional.ofNullable(preparedStatement), Optional.ofNullable(connection));
 		}
 		
 		return row;
@@ -105,7 +107,7 @@ public class BaseDao {
 			e.printStackTrace();
 		} finally {
 			// 关闭资源
-			DBUtil.close(resultSet, preparedStatement, connection);
+			//DBUtil.close(resultSet, preparedStatement, connection);
 		}
 		
 		return object;
@@ -165,7 +167,7 @@ public class BaseDao {
 			e.printStackTrace();
 			list = null;
 		} finally {
-			DBUtil.close(rs, ps, conn);
+			//DBUtil.close(rs, ps, conn);
 		}
 		return list;
 	}
@@ -198,55 +200,6 @@ public class BaseDao {
 		return obj;
 	}
 	
-	/**
-	 * 在同一个事务中执行多条sql语句
-	 * 
-	 * @param sqlList
-	 */
-	/*public static int executeUpdateBatch(List<SqlObject> sqlList) {
-		int result = 0;
-
-		if (sqlList != null && sqlList.size() > 0) {
-			Connection conn = null;
-			PreparedStatement ps = null;
-
-			try {
-				conn = DBUtil.getConnection(); // ======
-				conn.setAutoCommit(false);
-				// 获取每一个sql对象， 执行每一条sql语句
-				for (SqlObject temp : sqlList) {
-					ps = conn.prepareStatement(temp.getSql());
-					Object[] tempParam = temp.getParams();
-
-					if (tempParam != null && tempParam.length > 0) {
-						// 设置每条 sql的参数
-						for (int i = 0; i < tempParam.length; i++) {
-							ps.setObject(i + 1, tempParam[i]);
-						}
-					}
-					result = ps.executeUpdate();
-				}
-
-			} catch (SQLException e) {
-				result = 0;
-				try {
-					conn.rollback();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				e.printStackTrace();
-			} finally {
-				try {
-					conn.commit();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		return result;
-	}*/
 
 	
 }

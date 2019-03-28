@@ -41,7 +41,7 @@ public class NoteDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(resultSet, preparedStatement, connection);
+			//DBUtil.close(resultSet, preparedStatement, connection);
 		}
 		
 		return note;
@@ -158,7 +158,7 @@ public class NoteDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(resultSet, preparedStatement, connection);
+			//DBUtil.close(resultSet, preparedStatement, connection);
 		}
 		return list;
 	}
@@ -204,7 +204,7 @@ public class NoteDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(resultSet, preparedStatement, connection);
+			//DBUtil.close(resultSet, preparedStatement, connection);
 		}
 		return list;
 	}
@@ -235,7 +235,7 @@ public class NoteDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(resultSet, preparedStatement, connection);
+			//DBUtil.close(resultSet, preparedStatement, connection);
 		}
 		return list;
 	}
