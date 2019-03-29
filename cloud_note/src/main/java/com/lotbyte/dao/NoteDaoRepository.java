@@ -1,7 +1,6 @@
 package com.lotbyte.dao;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,17 +29,16 @@ public class NoteDaoRepository implements BaseRepository<Note> {
      * @return
      */
     public int noteEdit(Note note) {
-        int row = 0; // 受影响的行数
-        if (note.getNoteId() != null && note.getNoteId() > 0) { // 修改操作
+        Integer noteId = note.getNoteId();
+        return Optional.ofNullable(noteId).filter((id)->id>0).map((id)->{
             String sql = "update tb_note set title = ? ,content = ?, typeId = ?,pubtime = now() where noteid = ?";
             Object[] params = {note.getTitle(), note.getContent(), note.getTypeId(), note.getNoteId()};
-            row = BaseRepository.update(sql, params);
-        } else { // 添加
+            return BaseRepository.update(sql, params);
+        }).orElseGet(()->{
             String sql = "insert into tb_note (title,content,typeid,pubtime) values (?,?,?,now())";
             Object[] params = {note.getTitle(), note.getContent(), note.getTypeId()};
-            row = BaseRepository.update(sql, params);
-        }
-        return row;
+            return  BaseRepository.update(sql, params);
+        });
     }
 
     /**
@@ -51,30 +49,30 @@ public class NoteDaoRepository implements BaseRepository<Note> {
      */
     public Integer findNoteTotalCount(Integer userId, String title,
                                       String dateStr, String typeStr) {
-        Integer total = 0;
-        Object object = null;
-        String sql = "select count(1) from tb_note n INNER JOIN tb_note_type t on n.typeid = t.typeid where userid = ?";
-        if (!StringUtil.isNullOrEmpty(title)) { //标题模糊查询
-            sql += " and title like concat('%',?,'%')";
-            Object[] params = {userId, title};
-            object = BaseRepository.super.querySingValue(sql, params);
-        } else if (!StringUtil.isNullOrEmpty(dateStr)) {
-            sql += " and DATE_FORMAT(pubtime,'%Y年%m月') = ?";
-            Object[] params = {userId, dateStr};
-            object = BaseRepository.super.querySingValue(sql, params);
-        } else if (!StringUtil.isNullOrEmpty(typeStr)) {
-            sql += " and t.typeid = ?";
-            Object[] params = {userId, Integer.parseInt(typeStr)};
-            object = BaseRepository.super.querySingValue(sql, params);
-        } else { // 没有条件查询时
-            Object[] params = {userId};
-            object = BaseRepository.super.querySingValue(sql, params);
-        }
+        List param = new ArrayList() ;
+        StringBuilder sqlBuilder =new StringBuilder("select count(1) from " +
+                "tb_note n INNER JOIN tb_note_type t on n.typeid = t.typeid where userid = ?");
+        param.add(userId);
+        Optional.ofNullable(title).filter((s)->!s.trim().equals("")).map((t)->{
+            sqlBuilder.append(" and title like concat('%',?,'%')");
+            param.add(t);
+            return sqlBuilder.toString();
+        });
 
-        if (object != null) { // 如果查询到的object不为空，即给total赋值
-            total = Integer.parseInt(object.toString());
-        }
-        return total;
+        Optional.ofNullable(dateStr).filter((date)->!date.trim().equals("")).map((d)->{
+            sqlBuilder.append(" and DATE_FORMAT(pubtime,'%Y-%m-%d')= ? ");
+            param.add(d);
+            return sqlBuilder.toString();
+        });
+
+        Optional.ofNullable(typeStr).filter((type)->!type.trim().equals("")).map((t)->{
+            sqlBuilder.append(" and t.typeid = ?");
+            param.add(t);
+            return sqlBuilder.toString();
+        });
+
+
+        return Integer.parseInt(BaseRepository.super.querySingValue(sqlBuilder.toString(), param.toArray()).toString());
     }
 
     /**
@@ -145,7 +143,8 @@ public class NoteDaoRepository implements BaseRepository<Note> {
     }
 
     public static void main(String[] args) {
-        System.out.println(new NoteDaoRepository().findNoteGroupByDate(1).isPresent());
+        System.out.println(new NoteDaoRepository()
+                .findNoteTotalCount(1, "测试", "2018-05-27", ""));
     }
 
 

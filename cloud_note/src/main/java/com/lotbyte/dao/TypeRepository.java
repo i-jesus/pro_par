@@ -1,7 +1,6 @@
 package com.lotbyte.dao;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.lotbyte.base.BaseRepository;
 import com.lotbyte.po.NoteType;
@@ -19,30 +18,7 @@ public class TypeRepository implements BaseRepository<NoteType> {
 		return BaseRepository.super.queryRows(sql,NoteType.class,userId);
 	}
 
-	/**
-	 * 验证类型名是否可使用
-	 * @param userId
-	 * @param typeId
-	 * @param typeName
-	 * @return
-	 */
-	public boolean checkTypeName(Integer userId, String typeId, String typeName) {
-		String sql = "select typename as typeName from tb_note_type where userid = ? and typename = ? ";
-		Object object = null;
-		// 判断是验证添加操作还是修改操作
-		if (StringUtil.isNullOrEmpty(typeId)) { // 验证添加操作
-			Object[] params = {userId,typeName};
-			object = BaseRepository.super.querySingValue(sql, params);
-		} else { // 验证修改操作
-			sql += " and typeId != ?";
-			Object[] params = {userId,typeName,typeId};
-			object = BaseRepository.super.querySingValue(sql, params);
-		}
-		if (object == null) {
-			return true;
-		}
-		return false;
-	}
+
 
 	/**
 	 * 添加或者修改类型
@@ -52,19 +28,26 @@ public class TypeRepository implements BaseRepository<NoteType> {
 	 * @return
 	 */
 	public int addOrUpdate(Integer userId, String typeName, String typeId) {
-		int row = 0;
-		// 判断是添加操作还是修改操作
-		if (StringUtil.isNullOrEmpty(typeId)) { // 添加
-			String sql = "insert into tb_note_type(userid,typename) values (?,?)";
-			// 调用BaseDao的添加方法
-			row = BaseRepository.update(sql, userId,typeName);
-		} else { // 修改
-			String sql = "update tb_note_type set typename = ? where userid = ? and typeid = ?";
-			// 调用BaseDao的修改方法
-			row =  BaseRepository.update(sql, typeName,userId,typeId);
-		}
+		StringBuilder sqlBuilder =new StringBuilder();
+		List params=new ArrayList();
 
-		return row;
+		// Optinal 消除if else 判断操作
+		Optional.ofNullable(typeId).filter((id)->id.trim().equals("")).map((str) -> {
+			// id 为空值时
+			sqlBuilder.append("insert into tb_note_type(userid,typename) values (?,?)");
+			params.add(userId);
+			params.add(typeName);
+			return sqlBuilder.toString();
+		}).orElseGet(() -> {
+					// id 不空时
+					sqlBuilder.append("update tb_note_type set typename = ? where userid = ? and typeid = ?");
+					params.add(typeName);
+					params.add(userId);
+					params.add(typeId);
+					return sqlBuilder.toString();
+				}
+		);
+		return BaseRepository.update(sqlBuilder.toString(),params.toArray());
 	}
 
 	/**
@@ -107,4 +90,9 @@ public class TypeRepository implements BaseRepository<NoteType> {
 				,NoteType.class,typeName,userId);
 	}
 
+
+	public static void main(String[] args) {
+		//new TypeRepository().addOrUpdate(1,"abcdeeeee","80");
+
+	}
 }

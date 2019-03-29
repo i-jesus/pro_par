@@ -59,11 +59,4 @@ public class UserDaoRepository  implements BaseRepository<User> {
 		return BaseRepository.update(sql,u.getNick(),u.getHead(),u.getMood(),u.getUserId());
 	}
 
-
-    public static void main(String[] args) {
-        System.out.println(new UserDaoRepository().queryRows("select * from tb_user ", User.class).get());
-        System.out.println(new UserDaoRepository().
-                queryObject("select * from tb_user where uname =? and upwd =?", User.class,"shsxt",MD5Util.encode("123456"))
-                .get());
-    }
 }
