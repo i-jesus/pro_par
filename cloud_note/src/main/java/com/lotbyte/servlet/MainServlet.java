@@ -8,18 +8,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.lotbyte.po.Note;
-import com.lotbyte.po.NoteVo;
 import com.lotbyte.po.User;
 import com.lotbyte.service.NoteService;
-import com.lotbyte.util.Page;
 import com.lotbyte.util.StringUtil;
 import com.lotbyte.vo.ResultInfo;
+
 
 /**
  * 主页
  */
+
 @WebServlet("/main")
 public class MainServlet extends HttpServlet {
 	
@@ -65,12 +63,12 @@ public class MainServlet extends HttpServlet {
 		// 从session中得到用户ID
 		User user = (User) request.getSession().getAttribute("user");
 		// 日期分组查询
-		List<NoteVo> dateInfo = noteService.findNoteGroupByDate(user.getUserId());
+		List dateInfo = noteService.findNoteGroupByDate(user.getUserId());
 		// 存到session中
 		request.getSession().setAttribute("dateInfo", dateInfo);
 		
 		// 类型分组查询
-		List<NoteVo> typeInfo = noteService.findNoteGroupByType(user.getUserId());
+		List typeInfo = noteService.findNoteGroupByType(user.getUserId());
 		// 存到session中
 		request.getSession().setAttribute("typeInfo", typeInfo);
 		
@@ -81,11 +79,13 @@ public class MainServlet extends HttpServlet {
 	}
 
 
-	/**
+
+/**
 	 * 云记分页列表
 	 * @param request
 	 * @param response
 	 */
+
 	private void noteList(HttpServletRequest request, HttpServletResponse response, 
 			String title, String dateStr, String typeStr) {
 		// 得到参数
@@ -97,7 +97,7 @@ public class MainServlet extends HttpServlet {
 		Integer userId = user.getUserId();
 		
 		// 调用Service层的查询方法，得到云记的分页对象
-		ResultInfo<Page<Note>> resultInfo =  noteService.findNoteListByPage(pageNum, pageSize,userId, title, dateStr, typeStr);
+		ResultInfo resultInfo =  noteService.findNoteListByPage(pageNum, pageSize,userId, title, dateStr, typeStr);
 
 		// 将resultInfo对象存到request作用域中
 		request.setAttribute("resultInfo", resultInfo);
@@ -105,3 +105,4 @@ public class MainServlet extends HttpServlet {
 	}
 
 }
+

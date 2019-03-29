@@ -1,16 +1,13 @@
-package com.lotbyte.util;
+package com.lotbyte.base;
 
-import com.lotbyte.dao.BaseDao;
-import com.lotbyte.dao.BaseDao02;
-import com.lotbyte.inter.ConnectionFunction;
 import com.lotbyte.inter.ThrowingConsumer;
 import com.lotbyte.inter.ThrowingFunction;
-import com.lotbyte.inter.ThrowingSupplier;
-import com.lotbyte.po.User;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -22,6 +19,7 @@ import java.util.function.Supplier;
  *
  * @author Administrator
  */
+@SuppressWarnings("all")
 public class DBUtil {
 
     private static Properties prop;
@@ -58,11 +56,11 @@ public class DBUtil {
     /**
      * 关闭数据库连接
      */
-    public static void close(Optional<ResultSet> rs
-            , Optional<PreparedStatement> ps, Optional<Connection> conn) {
-        rs.ifPresent(ThrowingConsumer.consumerWrapper(r -> { r.close(); },Exception.class));
-        ps.ifPresent(ThrowingConsumer.consumerWrapper(p -> { p.close(); },Exception.class));
-        conn.ifPresent(ThrowingConsumer.consumerWrapper(c -> { c.close(); },Exception.class));
+    public static void close(ResultSet rs
+            , PreparedStatement ps, Connection conn) {
+        Optional.ofNullable(rs).ifPresent(ThrowingConsumer.consumerWrapper(r -> { r.close(); },Exception.class));
+        Optional.ofNullable(ps).ifPresent(ThrowingConsumer.consumerWrapper(p -> { p.close(); },Exception.class));
+        Optional.ofNullable(conn).ifPresent(ThrowingConsumer.consumerWrapper(c -> { c.close(); },Exception.class));
     }
 
 

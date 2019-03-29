@@ -1,6 +1,8 @@
 package com.lotbyte.inter;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 
 /**
  * @author lp
@@ -11,12 +13,6 @@ import java.sql.ResultSet;
 public interface ResultSetFunction<T> {
     /**
      * 执行结果集处理
-     * @param rs
      */
-    public T execute(ResultSet rs) throws Exception;
-
-
-
-
-
+    public ResultSet execute(PreparedStatement ps) throws Exception;
 }

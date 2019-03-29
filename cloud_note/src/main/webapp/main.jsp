@@ -107,7 +107,7 @@
 	<div class="col-md-9">
 		<%-- <jsp:include page="user/info.jsp"></jsp:include> --%>
 		<%-- <jsp:include page="noteType/list.jsp"></jsp:include> --%>
-		<jsp:include page="${changePage }"></jsp:include>
+		<jsp:include page="${changePage}"></jsp:include>
 	</div>		
 	
 	

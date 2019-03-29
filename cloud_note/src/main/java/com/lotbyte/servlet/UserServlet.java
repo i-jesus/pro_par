@@ -68,7 +68,7 @@ public class UserServlet extends HttpServlet {
 		} else if ("updateInfo".equals(action)) {
 			
 			// 修改用户信息
-			//updateInfo(request, response);
+			updateInfo(request, response);
 		}
 		
 	}
@@ -81,11 +81,11 @@ public class UserServlet extends HttpServlet {
 	 * @throws IOException 
 	 * @throws ServletException 
 	 */
-	/*private void updateInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void updateInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		
 		// 调用Service层的修改方法，返回ResultInfo对象
-		ResultInfo<User> resultInfo = userService.updateInfo(request);
+		ResultInfo resultInfo = userService.updateInfo(request);
 		
 		if (resultInfo.getCode() ==1) {
 			// 更新了用户信息之后更新session
@@ -94,11 +94,11 @@ public class UserServlet extends HttpServlet {
 		
 		request.setAttribute("resultInfo", resultInfo);
 		// 设置动态页面值
-		request.setAttribute("changePage", "user/info.jsp");
+		request.setAttribute("changePage", "user/user_info.jsp");
 		// 请求转发
 		request.getRequestDispatcher("main.jsp").forward(request, response);
 		
-	}*/
+	}
 
 
 	/**
@@ -119,7 +119,7 @@ public class UserServlet extends HttpServlet {
 		// 得到userId
 		Integer userId = user.getUserId();
 		// 调用Service层查询方法，返回resultInfo对象
-		ResultInfo<User> resultInfo = userService.checkNick(nick, userId);
+		ResultInfo resultInfo = userService.checkNick(nick, userId);
 		// 将resultInfo对象转换成JSON字符串，响应给ajax的回调函数
 		/*response.getWriter().write(new Gson().toJson(resultInfo));*/
 		JsonUtil.toJson(resultInfo, response);
@@ -183,7 +183,7 @@ public class UserServlet extends HttpServlet {
 	private void userCenter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		// 设置动态页面值
-		request.setAttribute("changePage", "user/info.jsp");
+		request.setAttribute("changePage", "user/user_info.jsp");
 		// 请求转发到首页
 		request.getRequestDispatcher("main.jsp").forward(request, response);
 		
@@ -233,7 +233,7 @@ public class UserServlet extends HttpServlet {
 		String  upwd = request.getParameter("upwd");
 		
 		// 调用Service层的查询方法，返回resultInfo对象
-		ResultInfo<User> resultInfo = userService.userLogin(uname, upwd);
+		ResultInfo resultInfo = userService.userLogin(uname, upwd);
 		
 		// 判断用户登录成功
 		if (resultInfo.getCode() == 1) { // 成功

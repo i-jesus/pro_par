@@ -16,9 +16,11 @@ import com.lotbyte.util.JsonUtil;
 import com.lotbyte.util.StringUtil;
 import com.lotbyte.vo.ResultInfo;
 
+
 /**
  * 类型管理
  */
+
 @WebServlet("/type")
 public class TypeServlet extends HttpServlet {
 	
@@ -44,23 +46,26 @@ public class TypeServlet extends HttpServlet {
 		}
 	}
 
-	/**
+
+/**
 	 * 删除类型
 	 * @param request
 	 * @param response
 	 * @throws IOException 
 	 */
+
 	private void deleteType(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// 接收参数
 		String typeId = request.getParameter("typeId");
 		// 调用Service的方法，返回resultInfo对象
-		ResultInfo<NoteType> resultInfo = typeService.deleteType(typeId);
+		ResultInfo resultInfo = typeService.deleteType(typeId);
 		// 将resultInfo对象转换成JSON字符串，响应给ajax的回调函数
 		JsonUtil.toJson(resultInfo, response);
 	}
 
 
-	/**
+
+/**
 	 * 添加或修改操作
 	 *  Servlet层：
 			1、得到参数（类型ID、类型名称）
@@ -79,15 +84,16 @@ public class TypeServlet extends HttpServlet {
 					如果是添加操作，不需要typeID;
 						String sql = " insert into tb_note_type (userid,typename) values (?,?)";
 						Object[] params = {userId,typeName};
-						BaseDao.executeUpdate(sql,params);
+						BaseRepository.executeUpdate(sql,params);
 					如果是修改操作，需要typeID
 						String sql = "update tb_note_type set typeName = ? where userId = ? and typeID = ?";
 						Object[] params = {userId,typeName,typeId};
-						BaseDao.executeUpdate(sql,params);
+						BaseRepository.executeUpdate(sql,params);
 	 * @param request
 	 * @param response
 	 * @throws IOException 
 	 */
+
 	private void addOrUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// 接收参数
 		String typeId = request.getParameter("typeId");
@@ -96,14 +102,15 @@ public class TypeServlet extends HttpServlet {
 		User user = (User) request.getSession().getAttribute("user");
 		Integer userId = user.getUserId();
 		// 调用Service层，返回resultInfo对象
-		ResultInfo<NoteType> resultInfo = typeService.addOrUpdate(userId, typeName, typeId);
+		ResultInfo resultInfo = typeService.addOrUpdate(userId, typeName, typeId);
 		// resultInfo对象转换成Json字符串，响应ajax回调函数
 		JsonUtil.toJson(resultInfo, response);
 		
 	}
 
 
-	/**
+
+/**
 	 * 验证当前用户下类型名的唯一性
 	 * 	Servlet层：
 			1、得到参数（类型ID、类型名称）
@@ -123,18 +130,20 @@ public class TypeServlet extends HttpServlet {
 	 * @param response
 	 * @throws IOException 
 	 */
+
 	private void checkTypeName(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// 接收参数
 		String typeId = request.getParameter("typeId");
 		String typeName = request.getParameter("typeName");
 		// 调用Service层，返回resultInfo对象
 		User user = (User) request.getSession().getAttribute("user");
-		ResultInfo<NoteType> resultInfo = typeService.checkTypeName(user.getUserId(),typeId,typeName);
+		ResultInfo resultInfo = typeService.checkTypeName(user.getUserId(),typeId,typeName);
 		// resultInfo对象转换成Json字符串，响应ajax回调函数
 		JsonUtil.toJson(resultInfo, response);
 	}
 
-	/**
+
+/**
 	 * 查询类型集合
 	 *	类型管理
 			Servlet层：
@@ -155,12 +164,13 @@ public class TypeServlet extends HttpServlet {
 	 * @throws IOException 
 	 * @throws ServletException 
 	 */
+
 	private void typeList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 从session中的到用户对象，得到userId
 		User user = (User) request.getSession().getAttribute("user");
 		Integer userId = user.getUserId();
 		// 调用Service层的查询，通过useerId查询当前用户的类型集合，返回resultInfo封装对象
-		ResultInfo<List<NoteType>> resultInfo = typeService.findNoteTypeList(userId);
+		ResultInfo resultInfo = typeService.findNoteTypeList(userId);
 		// 将resultInfo对象存到request作用域中
 		request.setAttribute("resultInfo", resultInfo);
 		// 设置动态页面值
@@ -171,3 +181,4 @@ public class TypeServlet extends HttpServlet {
 	}
 
 }
+
