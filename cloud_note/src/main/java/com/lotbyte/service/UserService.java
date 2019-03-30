@@ -102,7 +102,7 @@ public class UserService {
         u.setUserId(userId);
 
         // ==============上传头像=========
-        try {
+        /*try {
             // 得到part对象，name是file元素的name属性值
             Part part = request.getPart("img");
             // 得到文件上传的名称
@@ -117,7 +117,7 @@ public class UserService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         ResultInfo resultInfo = new ResultInfo();
         // 调用Dao层的修改方法，返回受影响的行数
@@ -125,10 +125,14 @@ public class UserService {
         return Optional.ofNullable(row).filter(r->r>0).map((r)->{
             resultInfo.setCode(1);
             resultInfo.setMsg("修改成功！");
+            //修改后user
+            resultInfo.setResult(user);
             return resultInfo;
         }).orElseGet(()->{
             resultInfo.setCode(0);
             resultInfo.setMsg("修改失败！");
+            // 元素user
+            resultInfo.setResult(request.getSession().getAttribute("user"));
             return resultInfo;
         });
     }

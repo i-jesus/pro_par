@@ -1,11 +1,13 @@
 package com.lotbyte.po;
 
+import java.io.Serializable;
+
 /**
  * 用户实体类
  * @author Administrator
  *
  */
-public class User {
+public class User implements Serializable {
 	
 	private Integer userId; // 主键ID
 	private String uname; // 用户名称

@@ -104,6 +104,7 @@ public class NoteService {
         });
         // 调用Dao层的查询方法，得到当前用户的云记总数量
         Integer total = noteRepository.findNoteTotalCount(userId, title, dateStr, typeStr);
+        System.out.println("查找结果-->"+total);
         return Optional.ofNullable(total).filter((t) -> t > 0).map((t) -> {
             // 得到分页对象
             Page<Note> page = new Page<Note>(pageNum.get(), pageSize.get(), total);
@@ -113,7 +114,7 @@ public class NoteService {
             // 通过用户ID和分页参数查询云记列表
             Optional<List<Note>> listOptional = noteRepository.findNoteListByPage(userId, index, pageSize.get(), title, dateStr, typeStr);
             // 将list集合放到page对象中
-            page.setDatas(listOptional.isPresent() ? listOptional.get() : null);
+            page.setDatas(listOptional.get());
             // 将page对象放到resultInfo对象中
             resultInfo.setResult(page);
             resultInfo.setCode(1); // 查询成功
@@ -171,6 +172,14 @@ public class NoteService {
     public List<Note> findNoteGroupByType(Integer userId) {
         Optional<List<Note>> list = noteRepository.findNoteGroupByType(userId);
         return list.isPresent() ? list.get() : null;
+    }
+
+    public static void main(String[] args) {
+        ResultInfo resultInfo=  new NoteService()
+                .findNoteListByPage("", "", 1, "", "2019-03", "");
+        Page page= (Page) resultInfo.getResult();
+        page.getDatas().forEach(System.out::println);
+        System.out.println(page.getTotalPages());
     }
 
 

@@ -2,6 +2,7 @@ package com.lotbyte.po;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Date;
  *
  */
 @Data
-public class Note {
+public class Note implements Serializable {
 
 	private Integer noteId; // 主键 field
 	private String title; // 标题

@@ -104,7 +104,6 @@ public interface BaseRepository<T> {
      */
     public default Optional<T> queryObject(String sql, Class<T> clazz, Object... params) {
         Optional<List<T>> results = queryRows(sql, clazz, params);
-        //System.out.println("单条记录查询结果:"+results.get().get(0));
         return results.isPresent()?Optional.of(results.get().get(0)):Optional.empty();
     }
 
@@ -124,7 +123,6 @@ public interface BaseRepository<T> {
                 for (Object obj : params) {
                     try {
                         cnt += 1;
-                        System.out.println("设置参数-->"+obj);
                         ps.setObject(cnt, obj);
                     } catch (SQLException e) {
                         e.printStackTrace();

@@ -58,7 +58,7 @@ public class NoteDaoRepository implements BaseRepository<Note> {
             param.add(t);
         });
         Optional.ofNullable(dateStr).filter((date)->!date.trim().equals("")).ifPresent((d)->{
-            sqlBuilder.append(" and DATE_FORMAT(pubtime,'%Y-%m-%d')= ? ");
+            sqlBuilder.append(" and DATE_FORMAT(pubtime,'%Y-%m')= ? ");
             param.add(d);
         });
         Optional.ofNullable(typeStr).filter((type)->!type.trim().equals("")).ifPresent((t)->{
@@ -87,7 +87,7 @@ public class NoteDaoRepository implements BaseRepository<Note> {
             param.add(t);
         });
         Optional.ofNullable(dateStr).filter((date)->!date.trim().equals("")).ifPresent((d)->{
-            sqlBuilder.append(" and DATE_FORMAT(pubtime,'%Y-%m-%d')= ? ");
+            sqlBuilder.append(" and DATE_FORMAT(pubtime,'%Y-%m')= ? ");
             param.add(d);
         });
         Optional.ofNullable(typeStr).filter((type)->!type.trim().equals("")).ifPresent((t)->{
@@ -122,8 +122,8 @@ public class NoteDaoRepository implements BaseRepository<Note> {
         String sql = "select count(noteid) as noteCount,DATE_FORMAT(pubtime,'%Y年%m月') as name "
                 + " from tb_note n INNER JOIN tb_note_type t "
                 + " on n.typeid = t.typeid where userid = ? "
-                + " GROUP BY DATE_FORMAT(name,'%Y年%m月') "
-                + " ORDER BY DATE_FORMAT(name,'%Y年%m月') desc";
+                + " GROUP BY DATE_FORMAT(pubtime,'%Y年%m月') "
+                + " ORDER BY DATE_FORMAT(pubtime,'%Y年%m月') desc";
         return BaseRepository.super.queryRows(sql,Note.class,userId);
     }
 
@@ -136,5 +136,11 @@ public class NoteDaoRepository implements BaseRepository<Note> {
 
         return BaseRepository.super.queryRows(sql,Note.class,userId);
     }
+
+
+    public static void main(String[] args) {
+        System.out.println(new NoteDaoRepository().findNoteTotalCount(1, "", "2019-03", ""));
+    }
+
 
 }

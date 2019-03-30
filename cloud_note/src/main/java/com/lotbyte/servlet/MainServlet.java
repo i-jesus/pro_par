@@ -2,6 +2,7 @@ package com.lotbyte.servlet;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.lotbyte.po.User;
 import com.lotbyte.service.NoteService;
-import com.lotbyte.util.StringUtil;
 import com.lotbyte.vo.ResultInfo;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -33,45 +34,49 @@ public class MainServlet extends HttpServlet {
 		String action = request.getParameter("action");
 		// 将action存到request作用域中
 		request.setAttribute("action", action);
-		if (StringUtil.isNullOrEmpty(action) || "list".equals(action)) {
+		Optional<String> ap=Optional.ofNullable(action);
+		ap.filter(a->StringUtils.isBlank(a)||a.equals("list")).map((a)->{
 			// 云记分页列表
 			noteList(request, response,null, null, null);
-		} else if ("searchKey".equals(action)) {
-			String title = request.getParameter("title");
-			// 存request域对象
-			request.setAttribute("title", title);
-			// 标题模糊查询
-			noteList(request, response, title,null, null);
-		} else if ("searchDate".equals(action)) {
-			String dateStr = request.getParameter("dateStr");
-			// 存request域对象
-			request.setAttribute("dateStr", dateStr);
-			// 标题模糊查询
-			noteList(request, response, null,dateStr,null);
-		} else if ("searchType".equals(action)) {
-			String typeStr = request.getParameter("typeStr");
-			// 存request域对象
-			request.setAttribute("typeStr", typeStr);
-			// 标题模糊查询
-			noteList(request, response, null,null,typeStr);
-		}
-		
-		
-		
-		
-		
+			return null;
+		}).orElseGet(()->{
+			return ap.filter((a)->a.equals("searchKey")).map((a)->{
+				String title = request.getParameter("title");
+				// 存request域对象
+				request.setAttribute("title", title);
+				// 标题模糊查询
+				noteList(request, response, title,null, null);
+				return null;
+			}).orElseGet(()->{
+				return ap.filter((a)->a.equals("searchDate")).map((a)->{
+					String dateStr = request.getParameter("dateStr");
+					// 标题模糊查询
+					noteList(request, response, null,dateStr,null);
+					return null;
+				}).orElseGet(()->{
+					return ap.filter((a)->a.equals("searchType")).map((a)->{
+						String typeStr = request.getParameter("typeStr");
+						// 存request域对象
+						request.setAttribute("typeStr", typeStr);
+						// 标题模糊查询
+						noteList(request, response, null,null,typeStr);
+						return null;
+					});
+				});
+			});
+		});
 		// 从session中得到用户ID
 		User user = (User) request.getSession().getAttribute("user");
 		// 日期分组查询
 		List dateInfo = noteService.findNoteGroupByDate(user.getUserId());
 		// 存到session中
 		request.getSession().setAttribute("dateInfo", dateInfo);
-		
+
 		// 类型分组查询
 		List typeInfo = noteService.findNoteGroupByType(user.getUserId());
 		// 存到session中
 		request.getSession().setAttribute("typeInfo", typeInfo);
-		
+
 		// 设置动态改变的页面
 		request.setAttribute("changePage", "note/list.jsp");
 		// 请求转发跳转到首页
@@ -97,6 +102,7 @@ public class MainServlet extends HttpServlet {
 		Integer userId = user.getUserId();
 		
 		// 调用Service层的查询方法，得到云记的分页对象
+		System.out.println("查询日期--->"+dateStr);
 		ResultInfo resultInfo =  noteService.findNoteListByPage(pageNum, pageSize,userId, title, dateStr, typeStr);
 
 		// 将resultInfo对象存到request作用域中

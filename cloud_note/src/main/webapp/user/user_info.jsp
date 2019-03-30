@@ -93,9 +93,9 @@
     				success:function(data){
     					if(data.code==1){
     						$("#msg").html(data.msg);
-    		    			$("#btn").attr("disabled",true);
+    		    			$("#btn").attr("disabled",false);
     					}else{
-    						$("#btn").attr("disabled",false);
+    						$("#btn").attr("disabled",true);
     					}
     				}	
     			})
