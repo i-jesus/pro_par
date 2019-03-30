@@ -22,8 +22,6 @@ public class EncodeFilter implements Filter {
 
 	
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-		
-		
 		// 基于HTTP
 		HttpServletRequest request = (HttpServletRequest)req;
 		HttpServletResponse response = (HttpServletResponse) resp;

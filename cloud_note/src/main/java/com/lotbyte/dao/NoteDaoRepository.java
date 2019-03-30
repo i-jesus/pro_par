@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import com.lotbyte.base.BaseRepository;
 import com.lotbyte.po.Note;
-import com.lotbyte.util.StringUtil;
 
 
+@SuppressWarnings("all")
 public class NoteDaoRepository implements BaseRepository<Note> {
 
     /**
@@ -53,26 +53,19 @@ public class NoteDaoRepository implements BaseRepository<Note> {
         StringBuilder sqlBuilder =new StringBuilder("select count(1) from " +
                 "tb_note n INNER JOIN tb_note_type t on n.typeid = t.typeid where userid = ?");
         param.add(userId);
-        Optional.ofNullable(title).filter((s)->!s.trim().equals("")).map((t)->{
-            sqlBuilder.append(" and title like concat('%',?,'%')");
+        Optional.ofNullable(title).filter((s)->!s.trim().equals("")).ifPresent((t)->{
+            sqlBuilder.append(" and title like concat('%',?,'%') ");
             param.add(t);
-            return sqlBuilder.toString();
         });
-
-        Optional.ofNullable(dateStr).filter((date)->!date.trim().equals("")).map((d)->{
+        Optional.ofNullable(dateStr).filter((date)->!date.trim().equals("")).ifPresent((d)->{
             sqlBuilder.append(" and DATE_FORMAT(pubtime,'%Y-%m-%d')= ? ");
             param.add(d);
-            return sqlBuilder.toString();
         });
-
-        Optional.ofNullable(typeStr).filter((type)->!type.trim().equals("")).map((t)->{
+        Optional.ofNullable(typeStr).filter((type)->!type.trim().equals("")).ifPresent((t)->{
             sqlBuilder.append(" and t.typeid = ?");
             param.add(t);
-            return sqlBuilder.toString();
         });
-
-
-        return Integer.parseInt(BaseRepository.super.querySingValue(sqlBuilder.toString(), param.toArray()).toString());
+       return Integer.parseInt(BaseRepository.super.querySingValue(sqlBuilder.toString(), param.toArray()).toString());
     }
 
     /**
@@ -85,24 +78,26 @@ public class NoteDaoRepository implements BaseRepository<Note> {
      */
     public Optional<List<Note>> findNoteListByPage(Integer userId, Integer index,
                                                    Integer pageSize, String title, String dateStr, String typeStr) {
-        List params = new ArrayList();
-        String sql = "select noteid as noteId,title,content,pubtime,n.typeid as typeId from tb_note n INNER JOIN tb_note_type t on n.typeid = t.typeid where userid = ? ";
-        params.add(userId);
-        // 标题模糊查询
-        if (!StringUtil.isNullOrEmpty(title)) {
-            sql += " and title like concat('%',?,'%') ";
-            params.add(title);
-        } else if (!StringUtil.isNullOrEmpty(dateStr)) { // 日期查询
-            sql += " and DATE_FORMAT(pubtime,'%Y年%m月') = ?";
-            params.add(dateStr);
-        } else if (!StringUtil.isNullOrEmpty(typeStr)) { // 类型查询
-            sql += " and t.typeid = ?";
-            params.add(typeStr);
-        }
-        sql += " limit ?,?";
-        params.add(index);
-        params.add(pageSize);
-        return BaseRepository.super.queryRows(sql,Note.class,params.toArray());
+        List param = new ArrayList();
+        StringBuilder sqlBuilder =new StringBuilder("select noteid as noteId,title,content,pubtime,n.typeid as typeId " +
+                "from tb_note n INNER JOIN tb_note_type t on n.typeid = t.typeid where userid = ? ");
+        param.add(userId);
+        Optional.ofNullable(title).filter((s)->!s.trim().equals("")).ifPresent((t)->{
+            sqlBuilder.append(" and title like concat('%',?,'%') ");
+            param.add(t);
+        });
+        Optional.ofNullable(dateStr).filter((date)->!date.trim().equals("")).ifPresent((d)->{
+            sqlBuilder.append(" and DATE_FORMAT(pubtime,'%Y-%m-%d')= ? ");
+            param.add(d);
+        });
+        Optional.ofNullable(typeStr).filter((type)->!type.trim().equals("")).ifPresent((t)->{
+            sqlBuilder.append(" and t.typeid = ?");
+            param.add(t);
+        });
+        sqlBuilder.append(" limit ?,? ");
+        param.add(index);
+        param.add(pageSize);
+        return BaseRepository.super.queryRows(sqlBuilder.toString(),Note.class,param.toArray());
     }
 
     /**
@@ -141,11 +136,5 @@ public class NoteDaoRepository implements BaseRepository<Note> {
 
         return BaseRepository.super.queryRows(sql,Note.class,userId);
     }
-
-    public static void main(String[] args) {
-        System.out.println(new NoteDaoRepository()
-                .findNoteTotalCount(1, "测试", "2018-05-27", ""));
-    }
-
 
 }

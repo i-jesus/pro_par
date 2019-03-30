@@ -4,7 +4,6 @@ package com.lotbyte.dao;
 
 import com.lotbyte.base.BaseRepository;
 import com.lotbyte.po.User;
-import com.lotbyte.util.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +43,9 @@ public class UserDaoRepository  implements BaseRepository<User> {
 	 * @param userId
 	 * @return
 	 */
-	public boolean checkNick(String nick, Integer userId) {
+	public Optional<User> checkNick(String nick, Integer userId) {
 		String sql = "select * from tb_user where nick = ? and userId != ?";
-		return BaseRepository.super.queryObject(sql,User.class,nick,userId).isPresent()?true:false;
+		return BaseRepository.super.queryObject(sql,User.class,nick,userId);
 	}
 
 	/**
