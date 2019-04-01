@@ -31,6 +31,8 @@ public interface BaseRepository<T> {
         return update(connection -> DBUtil.getConnection().prepareStatement(sql), (ps) -> {
             logger.info("更新sql-->"+sql);
             Optional.ofNullable(params).ifPresent((p) -> {
+
+
                 int cnt = 0;
                 for (Object obj : params) {
                     try {
@@ -43,6 +45,8 @@ public interface BaseRepository<T> {
             });
         });
     }
+
+
 
 
     public static int update(PreparedCreatorFunction pcf, PreparedSetFunction psf) {
@@ -134,6 +138,13 @@ public interface BaseRepository<T> {
     }
 
 
+    /**
+     * 列表查询
+     * @param pcf
+     * @param rsf
+     * @param clz
+     * @return
+     */
     public default Optional<List<T>> query(PreparedCreatorFunction pcf, ResultSetFunction rsf, Class clz) {
         Connection conn = null;
         PreparedStatement ps = null;

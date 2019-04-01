@@ -4,7 +4,6 @@ package com.lotbyte.service;
 import com.lotbyte.dao.NoteDaoRepository;
 import com.lotbyte.po.Note;
 import com.lotbyte.util.Page;
-import com.lotbyte.util.StringUtil;
 import com.lotbyte.vo.ResultInfo;
 import org.apache.commons.lang3.StringUtils;
 
